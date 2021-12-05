@@ -20,6 +20,8 @@ extra-source-files:
   LICENSE
   README.md
 
+other-modules:      HaskellPage.Source.Reddit
+
 executable haskellpage
   build-depends:
     , aeson
@@ -32,11 +34,14 @@ executable haskellpage
     , directory
     , ema                 >=0.2
     , filepath
+    , heddit
     , lvar
     , monad-logger
     , neat-interpolation
     , pandoc-types
     , relude
+    , req
+    , serialise
     , shower
     , tagged
     , text

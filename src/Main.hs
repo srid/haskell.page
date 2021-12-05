@@ -10,6 +10,7 @@ import qualified Ema
 import qualified Ema.CLI
 import qualified Ema.CLI as CLI
 import qualified Ema.Helper.Tailwind as Tailwind
+import qualified HaskellPage.Source.Reddit as Reddit
 import Text.Blaze.Html5 ((!))
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
@@ -35,7 +36,9 @@ main :: IO ()
 main = do
   Ema.runEma (\act m -> Ema.AssetGenerated Ema.Html . render act m) $ \act model -> do
     LVar.set model $ Model "Hello World. "
-    when (act == CLI.Run) $
+    when (act == CLI.Run) $ do
+      _stuff <- liftIO Reddit.get
+      putStrLn "Got stuff"
       liftIO $ threadDelay maxBound
 
 render :: Ema.CLI.Action -> Model -> Route -> LByteString
