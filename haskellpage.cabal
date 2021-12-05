@@ -20,10 +20,6 @@ extra-source-files:
   LICENSE
   README.md
 
-other-modules:
-  HaskellPage.Source.Reddit
-  HaskellPage.Source.Reddit.Orphans
-
 executable haskellpage
   build-depends:
     , aeson
@@ -69,6 +65,10 @@ executable haskellpage
     ScopedTypeVariables
     TupleSections
     ViewPatterns
+
+  other-modules:
+    HaskellPage.Source.Reddit
+    HaskellPage.Source.Reddit.Orphans
 
   main-is:            Main.hs
   hs-source-dirs:     src

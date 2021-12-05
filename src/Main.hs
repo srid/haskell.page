@@ -14,7 +14,6 @@ import qualified Ema.Helper.Markdown as Md
 import qualified Ema.Helper.Tailwind as Tailwind
 import qualified HaskellPage.Source.Reddit as Reddit
 import qualified Network.Reddit.Types as Reddit
-import qualified Network.Reddit.Types.Submission as Reddit
 import qualified Shower
 import Text.Blaze.Html5 ((!))
 import qualified Text.Blaze.Html5 as H
