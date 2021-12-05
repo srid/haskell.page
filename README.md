@@ -1,7 +1,9 @@
 # haskell.page
 
-When using plain cabal,
+```
+bin/run-m1-mac
+```
 
-```
-ghcid -T :main 
-```
+## Design points
+
+- Data is cached in `cborg.cache`. Delete this file to re-fetch.
