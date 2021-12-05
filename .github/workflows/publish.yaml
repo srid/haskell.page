@@ -17,8 +17,8 @@ jobs:
             experimental-features = nix-command flakes
       - name: Build sources 🔧
         run: |
-          nix build
-      - name: Generate HTML 🔧
+          nix-build
+      - name: Generate HTML 🎬
         run: |
           mkdir ./output
           export TARGET=$(pwd)/output
@@ -28,3 +28,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: output
+          cname: test.haskell.page
