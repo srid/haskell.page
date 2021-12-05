@@ -17,22 +17,34 @@ url = R.https "www.reddit.com" /: "r" /: "haskell" /: ".json"
 
 type SubmissionListing = T.Listing T.SubmissionID T.Submission
 
+get :: IO SubmissionListing
+get = do
+  cached cacheFile $ do
+    rListing :: Aeson.Result SubmissionListing <- R.runReq R.defaultHttpConfig $ do
+      response <- R.req R.GET url R.NoReqBody R.jsonResponse mempty
+      pure $ Aeson.fromJSON $ R.responseBody response
+    case rListing of
+      Aeson.Error s ->
+        error $ toText s
+      Aeson.Success list -> do
+        Serialise.writeFileSerialise cacheFile list
+        pure list
+
+-- Caching to cborg
+
 cacheFile :: FilePath
 cacheFile = "cborg.cache"
 
-get :: IO SubmissionListing
-get = do
-  doesFileExist cacheFile >>= \case
-    True -> do
-      Serialise.readFileDeserialise cacheFile
-    False -> do
-      putStrLn "NOTE: Cache file not found, fetching from reddit"
-      rListing :: Aeson.Result SubmissionListing <- R.runReq R.defaultHttpConfig $ do
-        response <- R.req R.GET url R.NoReqBody R.jsonResponse mempty
-        pure $ Aeson.fromJSON $ R.responseBody response
-      case rListing of
-        Aeson.Error s ->
-          error $ toText s
-        Aeson.Success list -> do
-          Serialise.writeFileSerialise cacheFile list
-          pure list
+cached :: Serialise.Serialise b => FilePath -> IO b -> IO b
+cached fp f = do
+  exists <- doesFileExist fp
+  if exists
+    then do
+      putStrLn "Loading from cache"
+      Serialise.readFileDeserialise fp
+    else do
+      putStrLn "Fetching data ..."
+      res <- f
+      putStrLn "Writing to cache"
+      Serialise.writeFileSerialise fp res
+      return res
