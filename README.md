@@ -11,3 +11,4 @@ bin/run-m1-mac
 ## Design thoughts
 
 - Newspaper like layout and style for uniqueness. Eg: https://codepen.io/silkine/pen/jldif
+
