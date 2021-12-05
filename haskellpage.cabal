@@ -20,7 +20,9 @@ extra-source-files:
   LICENSE
   README.md
 
-other-modules:      HaskellPage.Source.Reddit
+other-modules:
+  HaskellPage.Source.Reddit
+  HaskellPage.Source.Reddit.Orphans
 
 executable haskellpage
   build-depends:
