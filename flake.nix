@@ -12,11 +12,26 @@
     };
   };
   outputs = inputs@{ self, nixpkgs, flake-utils, ... }:
-    flake-utils.lib.eachSystem [ "x86_64-linux" "x86_64-darwin" ] (system:
+    flake-utils.lib.eachSystem [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ] (system:
       let
         name = "haskellpage";
         overlays = [ ];
         pkgs = import nixpkgs { inherit system overlays; config.allowBroken = true; };
+        # https://github.com/NixOS/nixpkgs/issues/140774#issuecomment-976899227
+        m1MacHsBuildTools =
+          pkgs.haskellPackages.override {
+            overrides = self: super:
+              let
+                workaround140774 = hpkg: with pkgs.haskell.lib;
+                  overrideCabal hpkg (drv: {
+                    enableSeparateBinOutput = false;
+                  });
+              in
+              {
+                ghcid = workaround140774 super.ghcid;
+                ormolu = workaround140774 super.ormolu;
+              };
+          };
         # Based on https://github.com/input-output-hk/daedalus/blob/develop/yarn2nix.nix#L58-L71
         filter = name: type:
           let
@@ -27,7 +42,6 @@
             !(
               baseName == "README.md" ||
               sansPrefix == "/bin" ||
-              sansPrefix == "/content" ||
               sansPrefix == "/.github" ||
               sansPrefix == "/.vscode" ||
               sansPrefix == "/.ghcid"
@@ -42,15 +56,18 @@
               # lvar = self.callCabal2nix "lvar" inputs.ema.inputs.lvar { }; # Until lvar gets into nixpkgs
             };
             modifier = drv:
-              pkgs.haskell.lib.addBuildTools drv (with pkgs.haskellPackages;
-              [
-                cabal-fmt
-                cabal-install
-                ghcid
-                haskell-language-server
-                ormolu
-                pkgs.nixpkgs-fmt
-              ]);
+              pkgs.haskell.lib.addBuildTools drv
+                (with (if system == "aarch64-darwin"
+                then m1MacHsBuildTools
+                else pkgs.haskellPackages); [
+                  # Specify your build/dev dependencies here. 
+                  cabal-fmt
+                  cabal-install
+                  ghcid
+                  haskell-language-server
+                  ormolu
+                  pkgs.nixpkgs-fmt
+                ]);
           };
       in
       {

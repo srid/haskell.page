@@ -1,7 +1,7 @@
 # haskell.page
 
 ```
-bin/run-m1-mac
+bin/run
 ```
 
 ## Design points
