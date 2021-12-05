@@ -21,7 +21,7 @@ data Route
   deriving (Show, Enum, Bounded)
 
 data Model = Model
-  { modelReddit :: Reddit.SubmissionListing
+  { modelReddit :: [Reddit.Submission]
   }
   deriving (Eq, Show)
 
@@ -37,7 +37,7 @@ main :: IO ()
 main = do
   Ema.runEma (\act m -> Ema.AssetGenerated Ema.Html . render act m) $ \act model -> do
     when (act == CLI.Run) $ do
-      posts <- liftIO Reddit.get
+      Reddit.Listing _ _ (toList -> posts) <- liftIO Reddit.getData
       LVar.set model $ Model posts
       putStrLn "Got stuff"
       liftIO $ threadDelay maxBound
@@ -46,10 +46,9 @@ render :: Ema.CLI.Action -> Model -> Route -> LByteString
 render emaAction model r =
   Tailwind.layout emaAction (H.title "Basic site" >> H.base ! A.href "/") $
     H.div ! A.class_ "container mx-auto" $ do
-      H.div ! A.class_ "mt-8 p-2" $ do
-        case r of
-          Index -> do
-            H.pre ! A.class_ "overflow-scroll text-xs" $ H.toHtml (Shower.shower model)
+      case r of
+        Index -> do
+          H.pre ! A.class_ "overflow-scroll text-xs" $ H.toHtml (Shower.shower model)
   where
     routeElem r' w =
       H.a ! A.class_ "text-red-500 hover:underline" ! routeHref r' $ w

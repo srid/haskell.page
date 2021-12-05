@@ -1,15 +1,19 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE TemplateHaskell #-}
 
-module HaskellPage.Source.Reddit where
+module HaskellPage.Source.Reddit
+  ( getData,
+    module T,
+  )
+where
 
 import qualified Codec.Serialise as Serialise
 import qualified Data.Aeson as Aeson
 import HaskellPage.Source.Reddit.Orphans ()
 import Network.HTTP.Req ((/:))
 import qualified Network.HTTP.Req as R
-import qualified Network.Reddit.Types as T
-import qualified Network.Reddit.Types.Submission as T
+import Network.Reddit.Types as T
+import Network.Reddit.Types.Submission as T
 import System.Directory (doesFileExist)
 
 url :: R.Url 'R.Https
@@ -17,8 +21,8 @@ url = R.https "www.reddit.com" /: "r" /: "haskell" /: ".json"
 
 type SubmissionListing = T.Listing T.SubmissionID T.Submission
 
-get :: IO SubmissionListing
-get = do
+getData :: IO SubmissionListing
+getData = do
   cached cacheFile $ do
     rListing :: Aeson.Result SubmissionListing <- R.runReq R.defaultHttpConfig $ do
       response <- R.req R.GET url R.NoReqBody R.jsonResponse mempty
