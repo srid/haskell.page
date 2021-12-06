@@ -13,7 +13,7 @@ import HaskellPage.Source.Reddit.Orphans ()
 import Network.HTTP.Req ((/:))
 import qualified Network.HTTP.Req as R
 import Network.Reddit.Types as T (Listing (..))
-import Network.Reddit.Types.Submission as T (Submission (..), SubmissionID (..))
+import Network.Reddit.Types.Submission as T (Submission (..), SubmissionContent (..), SubmissionID (..))
 import System.Directory (doesFileExist)
 
 url :: R.Url 'R.Https
