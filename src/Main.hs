@@ -14,7 +14,6 @@ import qualified Ema.CLI
 import qualified Ema.CLI as CLI
 import qualified Ema.Helper.Markdown as Md
 import qualified Ema.Helper.Tailwind as Tailwind
-import qualified GHC.Real as Ratio
 import qualified HaskellPage.Source.Reddit as Reddit
 import qualified Network.Reddit.Types as Reddit
 import qualified Shower
@@ -38,6 +37,9 @@ instance Ema Model Route where
   decodeRoute _model = \case
     "index.html" -> Just Index
     _ -> Nothing
+  allRoutes _ =
+    [ Index
+    ]
 
 main :: IO ()
 main = do
