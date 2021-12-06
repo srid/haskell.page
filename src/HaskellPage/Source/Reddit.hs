@@ -1,5 +1,7 @@
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeApplications #-}
 
 module HaskellPage.Source.Reddit
   ( getData,
@@ -9,35 +11,53 @@ where
 
 import qualified Codec.Serialise as Serialise
 import qualified Data.Aeson as Aeson
+import qualified Data.Text as T
 import HaskellPage.Source.Reddit.Orphans ()
 import Network.HTTP.Req ((/:))
 import qualified Network.HTTP.Req as R
 import Network.Reddit.Types as T (Listing (..))
+import qualified Network.Reddit.Types.Comment as T
 import Network.Reddit.Types.Submission as T (Submission (..), SubmissionContent (..), SubmissionID (..))
 import System.Directory (doesFileExist)
 
-url :: R.Url 'R.Https
-url = R.https "www.reddit.com" /: "r" /: "haskell" /: ".json"
-
 type SubmissionListing = T.Listing T.SubmissionID T.Submission
 
-getData :: IO SubmissionListing
+getData :: IO ([T.Submission], T.WithChildren)
 getData = do
-  cached cacheFile $ do
-    rListing :: Aeson.Result SubmissionListing <- R.runReq R.defaultHttpConfig $ do
+  Listing _ _ (toList -> posts) <-
+    reqGetCached @SubmissionListing "reddit.haskell.front" $
+      R.https "old.reddit.com" /: "r" /: "haskell" /: ".json"
+  let (SubmissionID monthlyHaskId) = fromMaybe (error "No monthly haskell post") $ do
+        Submission {..} <- head <$> nonEmpty posts
+        guard $ "Monthly Hask Anything" `T.isPrefixOf` title
+        pure submissionID
+  -- FIXME: heddit sucks, because it doesn't expose contents of this lame
+  -- 'WithChildren' type. Fork this library, or write my own `reddit-types`?
+  monthlyHask <-
+    reqGetCached @T.WithChildren ("reddit.haskell." <> toString monthlyHaskId) $
+      R.https "old.reddit.com" /: "r" /: "haskell" /: "comments" /: monthlyHaskId /: ".json"
+  pure (posts, monthlyHask)
+
+reqGetCached ::
+  forall a scheme.
+  (Serialise.Serialise a, Aeson.FromJSON a) =>
+  String ->
+  R.Url scheme ->
+  IO a
+reqGetCached cacheId url = do
+  cached (cacheId <> ".cbor") $ do
+    print url
+    res :: Aeson.Result a <- R.runReq R.defaultHttpConfig $ do
       response <- R.req R.GET url R.NoReqBody R.jsonResponse mempty
+      print $ R.responseBody response
       pure $ Aeson.fromJSON $ R.responseBody response
-    case rListing of
+    case res of
       Aeson.Error s ->
-        error $ toText s
+        error $ ("Error fetching " <> show url <> " because: ") <> toText s
       Aeson.Success list -> do
-        Serialise.writeFileSerialise cacheFile list
         pure list
 
 -- Caching to cborg
-
-cacheFile :: FilePath
-cacheFile = "cborg.cache"
 
 cached :: Serialise.Serialise b => FilePath -> IO b -> IO b
 cached fp f = do

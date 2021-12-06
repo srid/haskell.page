@@ -15,7 +15,7 @@ import qualified HaskellPage.View as View
 main :: IO ()
 main = do
   Ema.runEma (\act m -> Ema.AssetGenerated Ema.Html . View.render act m) $ \_act model -> do
-    Reddit.Listing _ _ (toList -> posts) <- liftIO Reddit.getData
+    (posts, monthlyHask) <- liftIO Reddit.getData
     LVar.set model $ Model posts
     putStrLn "Retrieved reddit data; not monitoring for changes"
     liftIO $ threadDelay maxBound

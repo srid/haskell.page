@@ -9,7 +9,7 @@ bin/run
 
 ## Design points
 
-- Data is cached in `cborg.cache`. Delete this file to re-fetch.
+- Data is cached in `*.cbor`. Delete these files to re-fetch.
 
 ## Style thoughts
 

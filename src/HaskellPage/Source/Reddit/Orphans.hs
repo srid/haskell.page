@@ -7,8 +7,11 @@
 module HaskellPage.Source.Reddit.Orphans where
 
 import qualified Codec.Serialise as Serialise
+import qualified Data.Aeson.Types as Aeson
+import qualified Network.Reddit as T
 import qualified Network.Reddit.Types as T
 import qualified Network.Reddit.Types.Award as T
+import qualified Network.Reddit.Types.Comment as T
 import qualified Network.Reddit.Types.Submission as T
 import qualified Network.Reddit.Types.Subreddit as T
 
@@ -37,5 +40,15 @@ deriving instance Serialise.Serialise T.Awarding
 deriving instance Serialise.Serialise T.PollData
 
 deriving instance Serialise.Serialise T.Submission
+
+deriving instance Serialise.Serialise T.CommentID
+
+deriving instance Serialise.Serialise T.Comment
+
+deriving instance Serialise.Serialise T.MoreComments
+
+deriving instance Serialise.Serialise T.ChildComment
+
+deriving instance Serialise.Serialise T.WithChildren
 
 deriving instance (Serialise.Serialise a, Serialise.Serialise b) => Serialise.Serialise (T.Listing a b)
