@@ -43,12 +43,11 @@ instance Ema Model Route where
 
 main :: IO ()
 main = do
-  Ema.runEma (\act m -> Ema.AssetGenerated Ema.Html . render act m) $ \act model -> do
-    when (act == CLI.Run) $ do
-      Reddit.Listing _ _ (toList -> posts) <- liftIO Reddit.getData
-      LVar.set model $ Model posts
-      putStrLn "Got stuff"
-      liftIO $ threadDelay maxBound
+  Ema.runEma (\act m -> Ema.AssetGenerated Ema.Html . render act m) $ \_act model -> do
+    Reddit.Listing _ _ (toList -> posts) <- liftIO Reddit.getData
+    LVar.set model $ Model posts
+    putStrLn "Got stuff"
+    liftIO $ threadDelay maxBound
 
 render :: Ema.CLI.Action -> Model -> Route -> LByteString
 render emaAction model r =
