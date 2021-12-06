@@ -13,6 +13,20 @@
     hercules-ci-effects.url = "github:hercules-ci/hercules-ci-effects";
   };
   outputs = inputs@{ self, nixpkgs, flake-utils, ... }:
+    let
+      effects = (import inputs.nixpkgs {
+        overlays = [
+          inputs.hercules-ci-effects
+        ];
+      }).effects;
+    in
+    {
+      helloEffect = effects.mkEffect {
+        effectScript = ''
+          echo Hello World
+        '';
+      };
+    } //
     flake-utils.lib.eachSystem [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ] (system:
       let
         name = "haskellpage";
@@ -70,11 +84,6 @@
                   pkgs.nixpkgs-fmt
                 ]);
           };
-        effects = (import inputs.nixpkgs {
-          overlays = [
-            inputs.hercules-ci-effects
-          ];
-        }).effects;
       in
       {
         # Used by `nix build` & `nix run`
@@ -83,10 +92,5 @@
         # Used by `nix develop`
         devShell = project true;
 
-        helloEffect = effects.mkEffect {
-          effectScript = ''
-            echo Hello World
-          '';
-        };
       });
 }
