@@ -23,6 +23,8 @@
         # Example: [ "x86_64-darwin" "aarch64-linux" ];
         systems = [ "x86_64-linux" ];
       };
+
+      effects.helloEffect = self.helloEffect.x86_64-linux;
     } //
     flake-utils.lib.eachSystem [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ] (system:
       let

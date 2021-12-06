@@ -40,11 +40,11 @@
     },
     "flake-compat-ci": {
       "locked": {
-        "lastModified": 1629629549,
-        "narHash": "sha256-c6Hipyp52MZ2pTFXEIRdcLK2rtKt9jggCQ7ZOgBS44k=",
+        "lastModified": 1638753619,
+        "narHash": "sha256-uJoNBfbXkn17W5PIrtQDPEk+zfN91oOB9I9XF9pOTmo=",
         "owner": "hercules-ci",
         "repo": "flake-compat-ci",
-        "rev": "ef10daf1cb1823086ed547d39806aaca4c53cc17",
+        "rev": "e950b4e71c711f3311cbf6323394c0aff7b7e4ec",
         "type": "github"
       },
       "original": {
