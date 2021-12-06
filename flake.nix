@@ -11,8 +11,19 @@
       flake = false;
     };
     hercules-ci-effects.url = "github:hercules-ci/hercules-ci-effects";
+    flake-compat-ci.url = "github:hercules-ci/flake-compat-ci";
   };
   outputs = inputs@{ self, nixpkgs, flake-utils, ... }:
+    {
+      ciNix = inputs.flake-compat-ci.lib.recurseIntoFlakeWith {
+        flake = self;
+
+        # Optional. Systems for which to perform CI.
+        # By default, every system attr in the flake will be built.
+        # Example: [ "x86_64-darwin" "aarch64-linux" ];
+        systems = [ "x86_64-linux" ];
+      };
+    } //
     flake-utils.lib.eachSystem [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ] (system:
       let
         name = "haskellpage";

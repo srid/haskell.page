@@ -38,6 +38,21 @@
         "type": "github"
       }
     },
+    "flake-compat-ci": {
+      "locked": {
+        "lastModified": 1629629549,
+        "narHash": "sha256-c6Hipyp52MZ2pTFXEIRdcLK2rtKt9jggCQ7ZOgBS44k=",
+        "owner": "hercules-ci",
+        "repo": "flake-compat-ci",
+        "rev": "ef10daf1cb1823086ed547d39806aaca4c53cc17",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-compat-ci",
+        "type": "github"
+      }
+    },
     "flake-compat_2": {
       "flake": false,
       "locked": {
@@ -293,6 +308,7 @@
       "inputs": {
         "ema": "ema",
         "flake-compat": "flake-compat_2",
+        "flake-compat-ci": "flake-compat-ci",
         "flake-utils": "flake-utils_2",
         "hercules-ci-effects": "hercules-ci-effects",
         "nixpkgs": [
