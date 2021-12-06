@@ -67,8 +67,10 @@ executable haskellpage
     ViewPatterns
 
   other-modules:
+    HaskellPage.SiteTypes
     HaskellPage.Source.Reddit
     HaskellPage.Source.Reddit.Orphans
+    HaskellPage.View
 
   main-is:            Main.hs
   hs-source-dirs:     src

@@ -11,6 +11,6 @@ bin/run
 
 - Data is cached in `cborg.cache`. Delete this file to re-fetch.
 
-## Design thoughts
+## Style thoughts
 
 - Newspaper like layout and style for uniqueness. Eg: https://codepen.io/silkine/pen/jldif
